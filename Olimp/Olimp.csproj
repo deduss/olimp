@@ -4,18 +4,19 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <InvariantGlobalization>true</InvariantGlobalization>
+        <UserSecretsId>aspnet-Olimp-46BAA9F4-A2DE-4501-94CA-776FE6782328</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.14"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.15" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.15">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.15" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.15"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.15"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.15"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.15"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.15"/>
     </ItemGroup>
 
 </Project>

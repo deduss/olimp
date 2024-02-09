@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olimp", "Olimp\Olimp.csproj", "{CAB321FB-AF84-4910-83B7-8BC3D4FCCADD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olimp", "Olimp\Olimp.csproj", "{3AC146E2-1904-4AD0-980F-606F849A0D7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CAB321FB-AF84-4910-83B7-8BC3D4FCCADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAB321FB-AF84-4910-83B7-8BC3D4FCCADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAB321FB-AF84-4910-83B7-8BC3D4FCCADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAB321FB-AF84-4910-83B7-8BC3D4FCCADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AC146E2-1904-4AD0-980F-606F849A0D7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AC146E2-1904-4AD0-980F-606F849A0D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AC146E2-1904-4AD0-980F-606F849A0D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AC146E2-1904-4AD0-980F-606F849A0D7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

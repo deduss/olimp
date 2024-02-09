@@ -1,47 +1,52 @@
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Olimp.Entities;
+using Olimp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// builder.Services.AddSqlite<MyDbContext>(builder.Configuration.GetConnectionString("Sqlite"));
-builder.Services.AddPooledDbContextFactory<MyDbContext>(optionsBuilder => 
-    optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")));
+builder.Services
+    .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+    app.UseMigrationsEndPoint();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
-app.MapGet("/test/{id:guid}", async (Guid id, [FromServices] IDbContextFactory<MyDbContext> factory) => {
-    await using var dbContext = await factory.CreateDbContextAsync();
+app.UseRouting();
 
-    var olimp = await dbContext.Olimps
-        .Where(o => o.Id == id)
-        .FirstOrDefaultAsync();
-    
-    return olimp;
-});
+app.UseAuthorization();
 
-app.MapPost("/test", async ([FromServices] IDbContextFactory<MyDbContext> factory, [FromBody] Olimp.Entities.Olimp olimp) => {
-    await using var dbContext = await factory.CreateDbContextAsync();
-
-    await dbContext.AddAsync(olimp);
-    await dbContext.SaveChangesAsync();
-});
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<MyDbContext>>();
+    var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
     await using var db = await dbContextFactory.CreateDbContextAsync();
     await db.Database.MigrateAsync();
 }

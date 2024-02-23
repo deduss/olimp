@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+input .btn .btn-primary {
+  margin-top: 16px;
+}

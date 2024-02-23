@@ -1,4 +1,4 @@
-@model Olimp.Data.Olimp
+@model Olimp.Data.EduOrg
 
 @{
     ViewData["Title"] = "Удаление";
@@ -6,9 +6,8 @@
 
 <h1>Удаление</h1>
 
-<h3>Вы уверены, что хотите удалить эту олимпиаду?</h3>
+<h3>Вы уверены, что хотите удалить это учебное учереждение?</h3>
 <div>
-    <h4>Олимпиада</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -18,22 +17,16 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Year)
+            @Html.DisplayNameFor(model => model.ShortName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Year)
+            @Html.DisplayFor(model => model.ShortName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Logo)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Map)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Map)
+            @Html.DisplayFor(model => model.Logo)
         </dd>
     </dl>
     

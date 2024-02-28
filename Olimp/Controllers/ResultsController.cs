@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Olimp.Models;
 
 namespace Olimp.Controllers;
 
+[Authorize(Roles = Roles.Registrar)]
 public class ResultsController : Controller
 {
     private readonly ApplicationDbContext _context;

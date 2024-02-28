@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
+using Olimp.Models;
 
 namespace Olimp.Controllers;
 
+[Authorize(Roles = Roles.Registrar)]
 public class ParticipantsController : Controller
 {
     private readonly ApplicationDbContext _context;

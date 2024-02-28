@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
+using Olimp.Models;
 
 namespace Olimp.Controllers;
 
+[Authorize(Roles = Roles.Admin)]
 public class StepsController : Controller
 {
     private readonly ApplicationDbContext _context;

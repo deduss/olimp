@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Olimp.Models;
 
@@ -18,6 +19,7 @@ public class HomeController : Controller
         return View();
     }
 
+    [AnyRoleAuthorize(Roles.Admin, Roles.Registrar)]
     public IActionResult Info()
     {
         return View();

@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
+using Olimp.Models;
 
 namespace Olimp.Controllers;
 
+[Authorize(Roles = Roles.Admin)]
 public class EdyOrgController : Controller
 {
     private readonly ApplicationDbContext _context;

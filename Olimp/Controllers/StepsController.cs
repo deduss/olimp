@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
@@ -12,6 +13,12 @@ namespace Olimp
     public class StepsController : Controller
     {
         private readonly ApplicationDbContext _context;
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            context.ModelState.Remove("Olimp");
+            base.OnActionExecuting(context);
+        }
 
         public StepsController(ApplicationDbContext context)
         {

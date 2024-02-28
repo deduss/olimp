@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
+using Olimp.Models;
 
 namespace Olimp
 {
@@ -50,8 +51,10 @@ namespace Olimp
         {
             var currentYear = DateTimeOffset.UtcNow.Year;
             var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
-            ViewData["ParticipantId"] = new SelectList(contextParticipants, "Id", "Number");
-            ViewData["StepId"] = new SelectList(_context.Steps, "Id", "Id");
+            ViewData["ParticipantId"] = CustomSelectList.Create(contextParticipants, x => x.Id.ToString(), 
+                x => $"{x.FirstName} {x.SurName} {x.LastName} ({x.Number})");
+            ViewData["StepId"] = CustomSelectList.Create(_context.Steps.Include(s => s.Olimp), x => x.Id.ToString(), 
+                x => $"{x.Olimp.Name} ({x.Name})");
             return View();
         }
 

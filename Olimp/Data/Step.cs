@@ -22,5 +22,5 @@ public class Step
     [DisplayName("Олимпиада")]
     public Guid OlimpId { get; set; }
     [DisplayName("Олимпиада")]
-    public Olimp Olimp { get; set; } = null!;
+    public required Olimp Olimp { get; set; }
 }

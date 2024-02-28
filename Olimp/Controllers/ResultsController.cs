@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
@@ -17,6 +18,13 @@ namespace Olimp
         public ResultsController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            context.ModelState.Remove("Step");
+            context.ModelState.Remove("Participant");
+            base.OnActionExecuting(context);
         }
 
         // GET: Results
@@ -51,9 +59,12 @@ namespace Olimp
         {
             var currentYear = DateTimeOffset.UtcNow.Year;
             var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
+            var steps = _context.Steps
+                .Include(s => s.Olimp)
+                .Where(step => step.Olimp.Year == currentYear);
             ViewData["ParticipantId"] = CustomSelectList.Create(contextParticipants, x => x.Id.ToString(), 
                 x => $"{x.FirstName} {x.SurName} {x.LastName} ({x.Number})");
-            ViewData["StepId"] = CustomSelectList.Create(_context.Steps.Include(s => s.Olimp), x => x.Id.ToString(), 
+            ViewData["StepId"] = CustomSelectList.Create(steps, x => x.Id.ToString(), 
                 x => $"{x.Olimp.Name} ({x.Name})");
             return View();
         }
@@ -72,9 +83,15 @@ namespace Olimp
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == DateTimeOffset.UtcNow.Year);
-            ViewData["ParticipantId"] = new SelectList(contextParticipants, "Id", "Number", result.ParticipantId);
-            ViewData["StepId"] = new SelectList(_context.Steps, "Id", "Id", result.StepId);
+            var currentYear = DateTimeOffset.UtcNow.Year;
+            var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
+            var steps = _context.Steps
+                .Include(s => s.Olimp)
+                .Where(step => step.Olimp.Year == currentYear);
+            ViewData["ParticipantId"] = CustomSelectList.Create(contextParticipants, x => x.Id.ToString(), 
+                x => $"{x.FirstName} {x.SurName} {x.LastName} ({x.Number})");
+            ViewData["StepId"] = CustomSelectList.Create(steps, x => x.Id.ToString(), 
+                x => $"{x.Olimp.Name} ({x.Name})");
             return View(result);
         }
 
@@ -91,9 +108,15 @@ namespace Olimp
             {
                 return NotFound();
             }
-            var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == DateTimeOffset.UtcNow.Year);
-            ViewData["ParticipantId"] = new SelectList(contextParticipants, "Id", "Number", result.ParticipantId);
-            ViewData["StepId"] = new SelectList(_context.Steps, "Id", "Id", result.StepId);
+            var currentYear = DateTimeOffset.UtcNow.Year;
+            var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
+            var steps = _context.Steps
+                .Include(s => s.Olimp)
+                .Where(step => step.Olimp.Year == currentYear);
+            ViewData["ParticipantId"] = CustomSelectList.Create(contextParticipants, x => x.Id.ToString(), 
+                x => $"{x.FirstName} {x.SurName} {x.LastName} ({x.Number})");
+            ViewData["StepId"] = CustomSelectList.Create(steps, x => x.Id.ToString(), 
+                x => $"{x.Olimp.Name} ({x.Name})");
             return View(result);
         }
 
@@ -129,9 +152,15 @@ namespace Olimp
                 }
                 return RedirectToAction(nameof(Index));
             }
-            var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == DateTimeOffset.UtcNow.Year);
-            ViewData["ParticipantId"] = new SelectList(contextParticipants, "Id", "Number", result.ParticipantId);
-            ViewData["StepId"] = new SelectList(_context.Steps, "Id", "Id", result.StepId);
+            var currentYear = DateTimeOffset.UtcNow.Year;
+            var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
+            var steps = _context.Steps
+                .Include(s => s.Olimp)
+                .Where(step => step.Olimp.Year == currentYear);
+            ViewData["ParticipantId"] = CustomSelectList.Create(contextParticipants, x => x.Id.ToString(), 
+                x => $"{x.FirstName} {x.SurName} {x.LastName} ({x.Number})");
+            ViewData["StepId"] = CustomSelectList.Create(steps, x => x.Id.ToString(), 
+                x => $"{x.Olimp.Name} ({x.Name})");
             return View(result);
         }
 

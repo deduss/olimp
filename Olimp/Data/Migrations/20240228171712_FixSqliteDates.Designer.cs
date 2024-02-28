@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Olimp.Data;
 
@@ -10,9 +11,11 @@ using Olimp.Data;
 namespace Olimp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240228171712_FixSqliteDates")]
+    partial class FixSqliteDates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.16");
@@ -88,8 +91,8 @@ namespace Olimp.Data.Migrations
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TEXT");
+                    b.Property<long?>("LockoutEnd")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -268,8 +271,8 @@ namespace Olimp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("TEXT");
+                    b.Property<long>("CreationDate")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

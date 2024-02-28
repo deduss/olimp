@@ -48,7 +48,8 @@ namespace Olimp
         // GET: Results/Create
         public IActionResult Create()
         {
-            var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == DateTimeOffset.UtcNow.Year);
+            var currentYear = DateTimeOffset.UtcNow.Year;
+            var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
             ViewData["ParticipantId"] = new SelectList(contextParticipants, "Id", "Number");
             ViewData["StepId"] = new SelectList(_context.Steps, "Id", "Id");
             return View();

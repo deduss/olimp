@@ -18,7 +18,7 @@ public class Participant
     [DisplayName("Пол")]
     public bool Gender { get; set; }
     
-    public DateTimeOffset CreationDate { get; set; }
+    public DateTime CreationDate { get; set; }
 
     public string GetNumberOrRoleName()
     {

@@ -60,7 +60,7 @@ namespace Olimp
             if (ModelState.IsValid)
             {
                 participant.Id = Guid.NewGuid();
-                participant.CreationDate = DateTimeOffset.UtcNow;
+                participant.CreationDate = DateTime.UtcNow;
                 _context.Add(participant);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

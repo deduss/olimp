@@ -30,7 +30,9 @@ namespace Olimp
         // GET: Results
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Results.Include(r => r.Participant).Include(r => r.Step);
+            var applicationDbContext = _context.Results
+                .Include(r => r.Participant)
+                .Include(r => r.Step.Olimp);
             return View(await applicationDbContext.ToListAsync());
         }
 

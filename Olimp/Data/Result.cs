@@ -13,4 +13,6 @@ public class Result
     public Guid StepId { get; set; }
     public required Participant Participant { get; set; }
     public required Step Step { get; set; }
+    [DisplayName("Результат")]
+    public required decimal Score { get; set; }
 }

@@ -17,6 +17,8 @@ public class Participant
     public required string LastName { get; set; }
     [DisplayName("Пол")]
     public bool Gender { get; set; }
+    
+    public DateTimeOffset CreationDate { get; set; }
 
     public string GetNumberOrRoleName()
     {

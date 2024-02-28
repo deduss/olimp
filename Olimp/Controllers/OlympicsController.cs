@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
 
-namespace Olimp;
+namespace Olimp.Controllers;
 
 public class OlympicsController : Controller
 {

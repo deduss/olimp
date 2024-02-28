@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
 using Olimp.Models;
 
-namespace Olimp;
+namespace Olimp.Controllers;
 
 public class ResultsController : Controller
 {

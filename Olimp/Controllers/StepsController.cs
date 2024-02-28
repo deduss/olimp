@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
 
-namespace Olimp;
+namespace Olimp.Controllers;
 
 public class StepsController : Controller
 {

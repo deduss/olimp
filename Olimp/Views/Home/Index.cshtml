@@ -1,7 +1,36 @@
-﻿@{
+﻿@model Olimp.Data.Olimp?
+@{
     ViewData["Title"] = "Olimp";
+    var participants = Model?.Steps
+        .SelectMany(step => step.Results)
+        .GroupBy(result => result.Participant);
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    @if (Model is null)
+    {
+        <h4>Олимпиады еще не проводились</h4>
+    }
+
+    @if (Model is not null)
+    {
+        <h1 class="display-4">@Model.Name</h1>
+        <h6 class="display-6">@Model.Description</h6>
+        <img src="@Model.Map" alt="Карта олимпиады"/>
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-start;">
+            @foreach (var participant in participants!)
+            {
+                <div>
+                    <div>
+                        <img src="@participant.Key.EduOrg.Logo"/>
+                        @participant.Key.Number (@participant.Key.EduOrg.ShortName)
+                    </div>
+                    @foreach (var results in participant)
+                    {
+                        <p style="margin-left: 20px">@results.Step.Name - @results.Score</p>
+                    }
+                </div>
+            }
+        </div>
+    }
 </div>

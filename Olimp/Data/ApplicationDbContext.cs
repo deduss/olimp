@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Olimp.Data;
@@ -16,4 +17,10 @@ public class ApplicationDbContext : IdentityDbContext
     public required DbSet<Participant> Participants { get; set; }
     public required DbSet<Step> Steps { get; set; }
     public required DbSet<Result> Results { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        base.OnModelCreating(builder);
+    }
 }

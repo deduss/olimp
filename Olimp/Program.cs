@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
+using Olimp.Data.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,10 @@ builder.Services.AddPooledDbContextFactory<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddScoped<IDbSeed, RolesSeed>();
+builder.Services.AddScoped<IDbSeed, UsersSeed>();
+builder.Services.AddScoped<IDbSeed, UsersWithRolesSeed>();
 
 builder.Services
     .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -51,6 +56,12 @@ using (var scope = app.Services.CreateScope())
     var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
     await using var db = await dbContextFactory.CreateDbContextAsync();
     await db.Database.MigrateAsync();
+
+    var seeds = scope.ServiceProvider.GetRequiredService<IEnumerable<IDbSeed>>();
+    foreach (var dbSeed in seeds)
+    {
+        await dbSeed.SeedAsync(db);
+    }
 }
 
 app.Run();

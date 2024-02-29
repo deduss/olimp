@@ -13,7 +13,6 @@ public class ApplicationDbContext : IdentityDbContext
     
     public required DbSet<Olimp> Olimps { get; set; }
     public required DbSet<EduOrg> EduOrgs { get; set; }
-    public required DbSet<Registration> Registrations { get; set; }
     public required DbSet<Participant> Participants { get; set; }
     public required DbSet<Step> Steps { get; set; }
     public required DbSet<Result> Results { get; set; }

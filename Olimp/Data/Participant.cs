@@ -12,6 +12,8 @@ public class Participant : IEntityId<Guid>
     [DisplayName("Фамилия")] public required string SurName { get; set; }
     [DisplayName("Отчество")] public required string LastName { get; set; }
     [DisplayName("Пол")] public bool Gender { get; set; }
+    [DisplayName("ПОО")] public Guid EduOrgId { get; set; }
+    [DisplayName("ПОО")] public required EduOrg EduOrg { get; set; }
 
     public DateTime CreationDate { get; set; }
 

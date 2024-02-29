@@ -15,4 +15,5 @@ public class Step : IEntityId<Guid>
     [DisplayName("Координата y на карте")] public int MapCoordsY { get; set; }
     [DisplayName("Олимпиада")] public Guid OlimpId { get; set; }
     [DisplayName("Олимпиада")] public required Olimp Olimp { get; set; }
+    public virtual HashSet<Result> Results { get; set; } = null!;
 }

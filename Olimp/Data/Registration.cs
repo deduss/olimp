@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore;
 namespace Olimp.Data;
 
 [PrimaryKey(nameof(Id))]
-public class Registration {
+public class Registration : IEntityId<Guid>
+{
     public Guid Id { get; set; }
 
     public Guid OlimpId { get; set; }
     public required Olimp Olimp { get; set; }
-    
+
     public Guid UserId { get; set; }
     public required Participant Participant { get; set; }
 

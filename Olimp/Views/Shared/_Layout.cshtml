@@ -29,6 +29,27 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Info">Информация</a>
                         </li>
+                        @if (User.IsInRole(Roles.Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Olympics" asp-action="Index">Олимпиады</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Steps" asp-action="Index">Этапы</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="EdyOrg" asp-action="Index">Шараги</a>
+                            </li>
+                        }
+                        @if (User.IsInRole(Roles.Registrar))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Participants" asp-action="Index">Участники</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Results" asp-action="Index">Результаты</a>
+                            </li>
+                        }
                     </ul>
                 }
                 <partial name="_LoginPartial"/>

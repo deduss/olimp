@@ -27,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Gender)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EduOrg)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -53,6 +56,9 @@
                 {
                     <p>Женский</p>
                 }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EduOrg)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |

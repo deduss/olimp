@@ -1,4 +1,5 @@
-﻿@model Olimp.Data.Olimp?
+﻿@using System.Globalization
+@model Olimp.Data.Olimp?
 @{
     ViewData["Title"] = "Olimp";
     var participants = Model?.Steps
@@ -18,22 +19,41 @@
         <h1 class="display-4">@Model.Name</h1>
         <h6 class="display-6">@Model.Description</h6>
         <img src="@Model.Map" class="olympics-map" alt="Карта олимпиады"/>
-        <div class="flex-container">
-            @foreach (var participant in participants!)
-            {
-                <div>
-                    <div class="participant-title h4">
-                        @* <div class="sharaga-logo-container"> *@
-                            <img class="sharaga-logo" src="@participant.Key.EduOrg.Logo"/>
-                        @* </div> *@
-                        @participant.Key.Number (@participant.Key.EduOrg.ShortName)
-                    </div>
-                    @foreach (var results in participant)
+        <div class="results-container">
+            <table class="styled-table">
+                <thead>
+                <tr>
+                    <th>ПОО</th>
+                    <th>Участник</th>
+                    @foreach (var step in Model.Steps)
                     {
-                        <div class="result-entry">@results.Step.Name - @results.Score</div>
+                        <th>@step.Name</th>
                     }
-                </div>
-            }
+                </tr>
+                </thead>
+                @foreach (var participant in participants!)
+                {
+                    <tr>
+                        <th>
+                            <img class="sharaga-logo" src="@participant.Key.EduOrg.Logo"/>
+                        </th>
+                        <th>
+                            @participant.Key.Number (@participant.Key.EduOrg.ShortName)
+                        </th>
+                        @foreach (var step in Model.Steps)
+                        {
+                            <th>
+                                @{
+                                    var result = participant.FirstOrDefault(r => r.Step == step)
+                                                     ?.Score.ToString(CultureInfo.InvariantCulture)
+                                                 ?? string.Empty;
+                                }
+                                @result
+                            </th>
+                        }
+                    </tr>
+                }
+            </table>
         </div>
     }
 </div>

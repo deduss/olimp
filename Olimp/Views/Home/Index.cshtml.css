@@ -13,25 +13,46 @@ div .flex-container {
     max-height: 300px;
 }
 
-.sharaga-logo-container {
-    width: 50px;
-    height: 50px;
-}
-
 .sharaga-logo {
     object-fit: contain;
     width: 50px;
     height: 50px;
 }
 
-.participant-title {
-    margin-left: 0;
+.results-container {
+    margin-top: 20px;
+    margin-left: auto;
     margin-right: auto;
     max-width: fit-content;
 }
 
-.result-entry {
-    margin-left: 60px;
-    margin-right: 0;
-    max-width: fit-content;
+.styled-table {
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
 }

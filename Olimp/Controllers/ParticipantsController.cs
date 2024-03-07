@@ -66,7 +66,7 @@ public class ParticipantsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Number,FirstName,SurName,LastName,Gender,Role,EduOrgId")] Participant participant)
     {
-        await EnsureNumberDoesntExist(participant.Number);
+        await EnsureNumberDoesntExist(participant.Number, null);
         if (ModelState.IsValid)
         {
             participant.Id = Guid.NewGuid();
@@ -110,7 +110,7 @@ public class ParticipantsController : Controller
             return NotFound();
         }
 
-        await EnsureNumberDoesntExist(participant.Number);
+        await EnsureNumberDoesntExist(participant.Number, id);
         if (ModelState.IsValid)
         {
             try
@@ -180,7 +180,7 @@ public class ParticipantsController : Controller
         return (_context.Participants?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 
-    private async Task EnsureNumberDoesntExist(int? number)
+    private async Task EnsureNumberDoesntExist(int? number, Guid? id)
     {
         if (number is null)
         {
@@ -188,11 +188,16 @@ public class ParticipantsController : Controller
         }
         
         var year = DateTime.UtcNow.Year;
-        var numberAlreadyExists = await _context.Participants
-            .Where(p => p.Number == number && p.CreationDate.Year == year)
-            .AnyAsync();
+        var numberAlreadyExistsRequest = _context.Participants
+            .Where(p => p.Number == number && p.CreationDate.Year == year);
 
-        if (numberAlreadyExists)
+        if (id is not null)
+        {
+            numberAlreadyExistsRequest = numberAlreadyExistsRequest
+                .Where(participant => participant.Id != id);
+        }
+
+        if (await numberAlreadyExistsRequest.AnyAsync())
         {
             ModelState.AddModelError(nameof(Participant.Number), "Участник с таким номером уже существует");
         }

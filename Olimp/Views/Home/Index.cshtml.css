@@ -1,0 +1,16 @@
+div .flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.olympics-map {
+    align-self: center;
+    max-width: 80%;
+    max-height: 300px;
+}
+
+.sharaga-logo {
+    width: 20px;
+    height: 20px;
+}

@@ -16,13 +16,13 @@
     {
         <h1 class="display-4">@Model.Name</h1>
         <h6 class="display-6">@Model.Description</h6>
-        <img src="@Model.Map" alt="Карта олимпиады"/>
-        <div style="display: flex; flex-wrap: wrap; align-items: flex-start;">
+        <img src="@Model.Map" class="olympics-map" alt="Карта олимпиады"/>
+        <div class="flex-container">
             @foreach (var participant in participants!)
             {
                 <div>
                     <div>
-                        <img src="@participant.Key.EduOrg.Logo"/>
+                        <img class="sharaga-logo" src="@participant.Key.EduOrg.Logo" />
                         @participant.Key.Number (@participant.Key.EduOrg.ShortName)
                     </div>
                     @foreach (var results in participant)

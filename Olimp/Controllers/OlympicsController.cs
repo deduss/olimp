@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
 using Olimp.Models;
@@ -15,6 +16,13 @@ public class OlympicsController : Controller
     {
         _context = context;
     }
+    
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        context.ModelState.Remove("Steps");
+        base.OnActionExecuting(context);
+    }
+
 
     // GET: Olympics
     public async Task<IActionResult> Index()

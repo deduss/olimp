@@ -57,7 +57,9 @@ public class ResultsController : Controller
     public IActionResult Create()
     {
         var currentYear = DateTimeOffset.UtcNow.Year;
-        var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
+        var contextParticipants = _context.Participants
+            .Where(p => p.CreationDate.Year == currentYear)
+            .Where(p => p.Number != null);
         var steps = _context.Steps
             .Include(s => s.Olimp)
             .Where(step => step.Olimp.Year == currentYear);

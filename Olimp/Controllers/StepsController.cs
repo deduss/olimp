@@ -16,6 +16,7 @@ public class StepsController : Controller
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         context.ModelState.Remove("Olimp");
+        context.ModelState.Remove("Results");
         base.OnActionExecuting(context);
     }
 

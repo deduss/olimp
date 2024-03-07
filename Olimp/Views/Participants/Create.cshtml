@@ -42,9 +42,8 @@
                 <select asp-for="Gender" class="form-select" asp-items="genderChoose"></select>
             </div>
             <div class="form-group">
-                <label asp-for="EduOrg" class="control-label">ПОО</label>
-                <input asp-for="EduOrg" class="form-control"/>
-                <span asp-validation-for="EduOrg" class="text-danger"></span>
+                <label asp-for="EduOrgId" class="control-label"></label>
+                <select asp-for="EduOrgId" class="form-control" asp-items="ViewBag.EduOrgId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Зарегестрировать" class="btn btn-primary"/>

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Olimp.Data;
 using Olimp.Models;
@@ -15,13 +17,20 @@ public class ParticipantsController : Controller
     {
         _context = context;
     }
+    
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        context.ModelState.Remove("EduOrg");
+        base.OnActionExecuting(context);
+    }
 
     // GET: Participants
     public async Task<IActionResult> Index()
     {
-        return _context.Participants != null ? 
-            View(await _context.Participants.ToListAsync()) :
-            Problem("Entity set 'ApplicationDbContext.Participants'  is null.");
+        if (_context.Participants != null)
+            return View(await _context.Participants.Include(p => p.EduOrg).ToListAsync());
+        else
+            return Problem("Entity set 'ApplicationDbContext.Participants'  is null.");
     }
 
     // GET: Participants/Details/5
@@ -33,6 +42,7 @@ public class ParticipantsController : Controller
         }
 
         var participant = await _context.Participants
+            .Include(p => p.EduOrg)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (participant == null)
         {
@@ -45,6 +55,7 @@ public class ParticipantsController : Controller
     // GET: Participants/Create
     public IActionResult Create()
     {
+        ViewBag.EduOrgId = new SelectList(_context.EduOrgs, "Id", "Name");
         return View();
     }
 
@@ -55,6 +66,7 @@ public class ParticipantsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Number,FirstName,SurName,LastName,Gender,Role")] Participant participant)
     {
+        await EnsureNumberDoesntExist(participant.Number);
         if (ModelState.IsValid)
         {
             participant.Id = Guid.NewGuid();
@@ -63,6 +75,7 @@ public class ParticipantsController : Controller
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        ViewBag.EduOrgId = new SelectList(_context.EduOrgs, "Id", "Name");
         return View(participant);
     }
 
@@ -74,11 +87,14 @@ public class ParticipantsController : Controller
             return NotFound();
         }
 
-        var participant = await _context.Participants.FindAsync(id);
+        var participant = await _context.Participants
+            .Include(p => p.EduOrg)
+            .FirstOrDefaultAsync(p => p.Id == id);
         if (participant == null)
         {
             return NotFound();
         }
+        ViewBag.EduOrgId = new SelectList(_context.EduOrgs, "Id", "Name");
         return View(participant);
     }
 
@@ -94,6 +110,7 @@ public class ParticipantsController : Controller
             return NotFound();
         }
 
+        await EnsureNumberDoesntExist(participant.Number);
         if (ModelState.IsValid)
         {
             try
@@ -114,6 +131,7 @@ public class ParticipantsController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
+        ViewBag.EduOrgId = new SelectList(_context.EduOrgs, "Id", "Name");
         return View(participant);
     }
 
@@ -126,6 +144,7 @@ public class ParticipantsController : Controller
         }
 
         var participant = await _context.Participants
+            .Include(p => p.EduOrg)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (participant == null)
         {
@@ -144,7 +163,9 @@ public class ParticipantsController : Controller
         {
             return Problem("Entity set 'ApplicationDbContext.Participants'  is null.");
         }
-        var participant = await _context.Participants.FindAsync(id);
+        var participant = await _context.Participants
+            .Include(p => p.EduOrg)
+            .FirstOrDefaultAsync(m => m.Id == id);
         if (participant != null)
         {
             _context.Participants.Remove(participant);
@@ -157,5 +178,23 @@ public class ParticipantsController : Controller
     private bool ParticipantExists(Guid id)
     {
         return (_context.Participants?.Any(e => e.Id == id)).GetValueOrDefault();
+    }
+
+    private async Task EnsureNumberDoesntExist(int? number)
+    {
+        if (number is null)
+        {
+            return;
+        }
+        
+        var year = DateTime.UtcNow.Year;
+        var numberAlreadyExists = await _context.Participants
+            .Where(p => p.Number == number && p.CreationDate.Year == year)
+            .AnyAsync();
+
+        if (numberAlreadyExists)
+        {
+            ModelState.AddModelError(nameof(Participant.Number), "Участник с таким номером уже существует");
+        }
     }
 }

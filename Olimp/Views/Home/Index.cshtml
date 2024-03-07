@@ -3,7 +3,8 @@
     ViewData["Title"] = "Olimp";
     var participants = Model?.Steps
         .SelectMany(step => step.Results)
-        .GroupBy(result => result.Participant);
+        .GroupBy(result => result.Participant)
+        .OrderBy(results => results.Key.Number);
 }
 
 <div class="text-center">
@@ -21,13 +22,15 @@
             @foreach (var participant in participants!)
             {
                 <div>
-                    <div>
-                        <img class="sharaga-logo" src="@participant.Key.EduOrg.Logo" />
+                    <div class="participant-title h4">
+                        @* <div class="sharaga-logo-container"> *@
+                            <img class="sharaga-logo" src="@participant.Key.EduOrg.Logo"/>
+                        @* </div> *@
                         @participant.Key.Number (@participant.Key.EduOrg.ShortName)
                     </div>
                     @foreach (var results in participant)
                     {
-                        <p style="margin-left: 20px">@results.Step.Name - @results.Score</p>
+                        <div class="result-entry">@results.Step.Name - @results.Score</div>
                     }
                 </div>
             }

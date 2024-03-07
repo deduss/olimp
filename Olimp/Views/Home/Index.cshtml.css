@@ -2,6 +2,9 @@ div .flex-container {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
+    gap: 40px;
+    margin-top: 20px;
+    justify-content: center;
 }
 
 .olympics-map {
@@ -10,7 +13,25 @@ div .flex-container {
     max-height: 300px;
 }
 
+.sharaga-logo-container {
+    width: 50px;
+    height: 50px;
+}
+
 .sharaga-logo {
-    width: 20px;
-    height: 20px;
+    object-fit: contain;
+    width: 50px;
+    height: 50px;
+}
+
+.participant-title {
+    margin-left: 0;
+    margin-right: auto;
+    max-width: fit-content;
+}
+
+.result-entry {
+    margin-left: 60px;
+    margin-right: 0;
+    max-width: fit-content;
 }

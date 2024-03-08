@@ -1,10 +1,10 @@
 @model IEnumerable<Olimp.Data.Step>
 
 @{
-    ViewData["Title"] = "Шаги";
+    ViewData["Title"] = "Этапы";
 }
 
-<h1>Шаги</h1>
+<h1>Этапы</h1>
 
 <p>
     <a asp-action="Create">Добавить</a>
@@ -62,7 +62,6 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Детали</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
             </td>
         </tr>

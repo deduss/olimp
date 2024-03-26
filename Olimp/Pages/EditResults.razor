@@ -1,0 +1,86 @@
+@page "/counter"
+@using Microsoft.EntityFrameworkCore
+@using Olimp.Data
+@using System.Globalization
+@inject IDbContextFactory<ApplicationDbContext> DbContextFactory;
+@inject NavigationManager NavigationManager;
+
+<h1>Номер участника</h1>
+
+<select @bind="ParticipantId">
+    @foreach (var p in Participants)
+    {
+        <option value="@p.Id">(@p.Number) @p.FirstName @p.LastName @p.SurName</option>
+    }
+</select>
+
+@foreach (var step in StepResults)
+{
+    <div>
+        @step.Key.Name
+        <input type="number" step=".01" inputmode="decimal"
+               value="@step.Value"
+               @onchange="@(e => StepResults[step.Key] = decimal.TryParse(
+                              e.Value?.ToString()?.Replace(',', ','), 
+                              CultureInfo.InvariantCulture, 
+                              out var temp) 
+                              ? temp 
+                              : null)"/>
+    </div>
+}
+
+<button @onclick="Submit">Применить</button>
+
+@code {
+    private List<Participant> Participants;
+    private Dictionary<Step, decimal?> StepResults;
+
+    [Parameter] public Guid ParticipantId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var year = DateTime.UtcNow.Year;
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        Participants = await dbContext.Participants
+            .Where(participant => participant.CreationDate.Year == year)
+            .ToListAsync();
+
+        var currentOlimp = await dbContext.Olimps
+            .Include(olimp => olimp.Steps)
+            .ThenInclude(step => step.Results.Where(result => result.ParticipantId == ParticipantId))
+            .FirstOrDefaultAsync(olimp => olimp.Year == year);
+
+        if (currentOlimp is null)
+        {
+            throw new Exception("No olimp!");
+        }
+
+        StepResults = currentOlimp.Steps.ToDictionary(step => step, step => step.Results.FirstOrDefault()?.Score);
+
+        await base.OnInitializedAsync();
+    }
+
+    async Task Submit()
+    {
+        if (ParticipantId == default)
+        {
+            return;
+        }
+
+        await using var dbContext = await DbContextFactory.CreateDbContextAsync();
+        var existingResults = await dbContext.Results
+            .Where(result => result.ParticipantId == ParticipantId)
+            .ToListAsync();
+
+        dbContext.Results.RemoveRange(existingResults);
+
+        foreach (var (step, value) in StepResults.Where(pair => pair.Value.HasValue))
+        {
+            dbContext.Results.Add(new Result() { StepId = step.Id, ParticipantId = ParticipantId, Score = value!.Value });
+        }
+
+        await dbContext.SaveChangesAsync();
+        NavigationManager.NavigateTo("/Results");
+    }
+
+}

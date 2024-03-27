@@ -1,48 +1,57 @@
 @page "/counter"
 @using Microsoft.EntityFrameworkCore
 @using Olimp.Data
-@using System.Globalization
+@using System.Collections.Immutable
 @inject IDbContextFactory<ApplicationDbContext> DbContextFactory;
 @inject NavigationManager NavigationManager;
 
-<h1>Номер участника</h1>
 
-<select @bind="ParticipantId">
+<label class="control-label">Участник</label>
+<select class="form-select"
+        @onchange="args => ParticipantId = Guid.Parse(args.Value!.ToString()!)" 
+        disabled="@IsParticipantChangeDisabled">
     @foreach (var p in Participants)
     {
-        <option value="@p.Id">(@p.Number) @p.FirstName @p.LastName @p.SurName</option>
+        if (p.Id == ParticipantId)
+        {
+            <option value="@p.Id" selected>(@p.Number) @p.FirstName @p.LastName @p.SurName</option>
+        }
+        else
+        {
+            <option value="@p.Id">(@p.Number) @p.FirstName @p.LastName @p.SurName</option>
+        }
     }
 </select>
 
 @foreach (var step in StepResults)
 {
     <div>
-        @step.Key.Name
+        <label class="control-label">@step.StepName</label>
         <input type="number" step=".01" inputmode="decimal"
-               value="@step.Value"
-               @onchange="@(e => StepResults[step.Key] = decimal.TryParse(
-                              e.Value?.ToString()?.Replace(',', ','), 
-                              CultureInfo.InvariantCulture, 
-                              out var temp) 
-                              ? temp 
-                              : null)"/>
+               class="form-control"
+               @bind="step.Result"/>
     </div>
 }
 
-<button @onclick="Submit">Применить</button>
+<button class="btn btn-primary"
+        @onclick="Submit">Применить</button>
 
 @code {
     private List<Participant> Participants;
-    private Dictionary<Step, decimal?> StepResults;
+    private IEnumerable<ResultContainer> StepResults;
 
-    [Parameter] public Guid ParticipantId { get; set; }
+    [Parameter] public Guid? ParticipantId { get; set; }
+    public bool IsParticipantChangeDisabled { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        IsParticipantChangeDisabled = ParticipantId is not null;
+        
         var year = DateTime.UtcNow.Year;
         await using var dbContext = await DbContextFactory.CreateDbContextAsync();
         Participants = await dbContext.Participants
             .Where(participant => participant.CreationDate.Year == year)
+            .Where(participant => participant.Number != null)
             .ToListAsync();
 
         var currentOlimp = await dbContext.Olimps
@@ -55,7 +64,12 @@
             throw new Exception("No olimp!");
         }
 
-        StepResults = currentOlimp.Steps.ToDictionary(step => step, step => step.Results.FirstOrDefault()?.Score);
+        StepResults = currentOlimp.Steps.Select(step => new ResultContainer
+        {
+            StepId = step.Id,
+            StepName = step.Name,
+            Result = step.Results.FirstOrDefault()?.Score
+        }).ToImmutableList();
 
         await base.OnInitializedAsync();
     }
@@ -74,13 +88,20 @@
 
         dbContext.Results.RemoveRange(existingResults);
 
-        foreach (var (step, value) in StepResults.Where(pair => pair.Value.HasValue))
+        foreach (var container in StepResults.Where(x => x.Result is not null))
         {
-            dbContext.Results.Add(new Result() { StepId = step.Id, ParticipantId = ParticipantId, Score = value!.Value });
+            dbContext.Results.Add(new Result() { StepId = container.StepId, ParticipantId = ParticipantId.Value, Score = container.Result!.Value });
         }
 
         await dbContext.SaveChangesAsync();
-        NavigationManager.NavigateTo("/Results");
+        NavigationManager.NavigateTo("/Results", true);
+    }
+
+    private class ResultContainer
+    {
+        public required Guid StepId { get; init; }
+        public required string StepName { get; init; }
+        public decimal? Result { get; set; }
     }
 
 }

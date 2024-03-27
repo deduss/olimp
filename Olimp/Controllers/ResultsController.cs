@@ -103,66 +103,7 @@ public class ResultsController : Controller
         {
             return NotFound();
         }
-
-        var result = await _context.Results.FindAsync(id);
-        if (result == null)
-        {
-            return NotFound();
-        }
-        var currentYear = DateTimeOffset.UtcNow.Year;
-        var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
-        var steps = _context.Steps
-            .Include(s => s.Olimp)
-            .Where(step => step.Olimp.Year == currentYear);
-        ViewData["ParticipantId"] = CustomSelectList.Create(contextParticipants, x => x.Id.ToString(), 
-            x => $"{x.FirstName} {x.SurName} {x.LastName} ({x.Number})");
-        ViewData["StepId"] = CustomSelectList.Create(steps, x => x.Id.ToString(), 
-            x => $"{x.Olimp.Name} ({x.Name})");
-        return View(result);
-    }
-
-    // POST: Results/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("Id,ParticipantId,StepId,Score")] Result result)
-    {
-        if (id != result.Id)
-        {
-            return NotFound();
-        }
-
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                _context.Update(result);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ResultExists(result.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
-        }
-        var currentYear = DateTimeOffset.UtcNow.Year;
-        var contextParticipants = _context.Participants.Where(p => p.CreationDate.Year == currentYear);
-        var steps = _context.Steps
-            .Include(s => s.Olimp)
-            .Where(step => step.Olimp.Year == currentYear);
-        ViewData["ParticipantId"] = CustomSelectList.Create(contextParticipants, x => x.Id.ToString(), 
-            x => $"{x.FirstName} {x.SurName} {x.LastName} ({x.Number})");
-        ViewData["StepId"] = CustomSelectList.Create(steps, x => x.Id.ToString(), 
-            x => $"{x.Olimp.Name} ({x.Name})");
-        return View(result);
+        return View(id.Value);
     }
 
     // GET: Results/Delete/5

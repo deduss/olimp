@@ -22,9 +22,6 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EquationType)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.MapCoordsX)
             </th>
             <th>
@@ -43,13 +40,10 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Type)
+                @item.Type.ToDisplayName()
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EquationType)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.MapCoordsX)

@@ -1,4 +1,5 @@
-﻿@using System.Globalization
+﻿@using System.Collections.Immutable
+@using System.Globalization
 @using Olimp.Data
 @model Olimp?
 @{
@@ -6,9 +7,16 @@
     var participants = Model?.Steps
         .SelectMany(step => step.Results)
         .GroupBy(result => result.Participant)
-        .OrderBy(results => results.Key.Number);
+        .ToImmutableList();
 
-    var participantResultsCollection = new ParticipantResultsCollection(participants ?? (IEnumerable<IGrouping<Participant, Result>>)Array.Empty<IGrouping<Participant, Result>>());
+    var maleParticipants = participants?.Where(results => results.Key.Gender)
+                           ?? Array.Empty<IGrouping<Participant, Result>>();
+    
+    var femaleParticipants = participants?.Where(results => !results.Key.Gender)
+                           ?? Array.Empty<IGrouping<Participant, Result>>();
+
+    var maleResultsCollection = new ParticipantResultsCollection(maleParticipants);
+    var femaleResultsCollection = new ParticipantResultsCollection(femaleParticipants);
 }
 
 <div class="text-center">
@@ -35,7 +43,10 @@
                     <th>Результат</th>
                 </tr>
                 </thead>
-                @foreach (var participant in participantResultsCollection!)
+                <tr>
+                    <th colspan="@(Model.Steps.Count + 3)">Юноши</th>
+                </tr>
+                @foreach (var participant in maleResultsCollection)
                 {
                     <tr>
                         <th>
@@ -59,6 +70,34 @@
                             @participant.Points.ToString("0.0", CultureInfo.InvariantCulture)
                         </th>
                     </tr>
+                }
+                <tr>
+                    <th colspan="@(Model.Steps.Count + 3)">Девушки</th>
+                </tr>
+                @foreach (var participant in femaleResultsCollection)
+                {
+                <tr>
+                    <th>
+                        <img class="sharaga-logo" src="@participant.Logo"/>
+                    </th>
+                    <th>
+                        @participant.Number (@participant.ShortName)
+                    </th>
+                    @foreach (var step in Model.Steps)
+                    {
+                    <th>
+                        @{
+                        var result = participant.Results.TryGetValue(step, out var value)
+                        ? value.ToString(CultureInfo.InvariantCulture)
+                        : string.Empty;
+                        }
+                        @result
+                    </th>
+                    }
+                    <th>
+                        @participant.Points.ToString("0.0", CultureInfo.InvariantCulture)
+                    </th>
+                </tr>
                 }
             </table>
         </div>

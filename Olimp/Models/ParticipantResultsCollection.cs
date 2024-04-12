@@ -35,6 +35,10 @@ public class ParticipantResultsCollection : IReadOnlyList<ParticipantResult>
 
         CalcPoints(StepType.Theory);
         CalcPoints(StepType.Practice);
+
+        _participants = _participants
+            .OrderBy(result => result.Points)
+            .ToImmutableArray();
     }
 
     private void CalcPoints(StepType stepType)

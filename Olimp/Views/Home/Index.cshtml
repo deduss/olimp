@@ -1,11 +1,14 @@
 ﻿@using System.Globalization
-@model Olimp.Data.Olimp?
+@using Olimp.Data
+@model Olimp?
 @{
     ViewData["Title"] = "Olimp";
     var participants = Model?.Steps
         .SelectMany(step => step.Results)
         .GroupBy(result => result.Participant)
         .OrderBy(results => results.Key.Number);
+
+    var participantResultsCollection = new ParticipantResultsCollection(participants ?? (IEnumerable<IGrouping<Participant, Result>>)Array.Empty<IGrouping<Participant, Result>>());
 }
 
 <div class="text-center">
@@ -29,28 +32,32 @@
                     {
                         <th>@step.Name</th>
                     }
+                    <th>Результат</th>
                 </tr>
                 </thead>
-                @foreach (var participant in participants!)
+                @foreach (var participant in participantResultsCollection!)
                 {
                     <tr>
                         <th>
-                            <img class="sharaga-logo" src="@participant.Key.EduOrg.Logo"/>
+                            <img class="sharaga-logo" src="@participant.Logo"/>
                         </th>
                         <th>
-                            @participant.Key.Number (@participant.Key.EduOrg.ShortName)
+                            @participant.Number (@participant.ShortName)
                         </th>
                         @foreach (var step in Model.Steps)
                         {
                             <th>
                                 @{
-                                    var result = participant.FirstOrDefault(r => r.Step == step)
-                                                     ?.Score.ToString(CultureInfo.InvariantCulture)
-                                                 ?? string.Empty;
+                                    var result = participant.Results.TryGetValue(step, out var value) 
+                                        ? value.ToString(CultureInfo.InvariantCulture) 
+                                        : string.Empty;
                                 }
                                 @result
                             </th>
                         }
+                        <th>
+                            @participant.Points.ToString("0.0", CultureInfo.InvariantCulture)
+                        </th>
                     </tr>
                 }
             </table>

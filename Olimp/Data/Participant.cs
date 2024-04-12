@@ -14,6 +14,7 @@ public class Participant : IEntityId<Guid>
     [DisplayName("Пол")] public bool Gender { get; set; }
     [DisplayName("ПОО")] public Guid EduOrgId { get; set; }
     [DisplayName("ПОО")] public required EduOrg EduOrg { get; set; }
+    public virtual HashSet<Result> Results { get; set; } = null!;
 
     public DateTime CreationDate { get; set; }
 

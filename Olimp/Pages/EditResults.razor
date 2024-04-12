@@ -8,8 +8,8 @@
 
 <label class="control-label">Участник</label>
 <select class="form-select"
-        @onchange="args => ParticipantId = Guid.Parse(args.Value!.ToString()!)" 
-        disabled="@IsParticipantChangeDisabled">
+        @bind="ParticipantId"
+        disabled="@IsEdit">
     @foreach (var p in Participants)
     {
         if (p.Id == ParticipantId)
@@ -41,18 +41,25 @@
     private IEnumerable<ResultContainer> StepResults;
 
     [Parameter] public Guid? ParticipantId { get; set; }
-    public bool IsParticipantChangeDisabled { get; set; }
+    public bool IsEdit { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        IsParticipantChangeDisabled = ParticipantId is not null;
+        IsEdit = ParticipantId is not null;
         
         var year = DateTime.UtcNow.Year;
         await using var dbContext = await DbContextFactory.CreateDbContextAsync();
-        Participants = await dbContext.Participants
+        var participantQuery = dbContext.Participants
             .Where(participant => participant.CreationDate.Year == year)
-            .Where(participant => participant.Number != null)
-            .ToListAsync();
+            .Where(participant => participant.Number != null);
+        if (!IsEdit)
+        {
+            participantQuery = participantQuery.Where(participant => participant.Results.Count == 0);
+        }
+
+        Participants = await participantQuery.ToListAsync();
+
+        ParticipantId ??= Participants.FirstOrDefault()?.Id;
 
         var currentOlimp = await dbContext.Olimps
             .Include(olimp => olimp.Steps)

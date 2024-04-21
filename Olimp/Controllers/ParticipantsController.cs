@@ -21,6 +21,7 @@ public class ParticipantsController : Controller
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         context.ModelState.Remove("EduOrg");
+        context.ModelState.Remove("Results");
         base.OnActionExecuting(context);
     }
 
